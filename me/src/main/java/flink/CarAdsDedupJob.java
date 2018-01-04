@@ -1,4 +1,4 @@
-package main.java;
+package flink;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.flink.api.common.JobExecutionResult;
@@ -24,7 +24,7 @@ import java.time.Instant;
 /**
  * @author diego.ruiz
  */
-public class FlinkCarAdProcessor {
+public class CarAdsDedupJob {
 
     public static void main(String args[]) throws Exception {
 

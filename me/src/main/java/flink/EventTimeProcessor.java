@@ -1,4 +1,4 @@
-package main.java;
+package flink;
 
 import org.apache.flink.api.common.JobExecutionResult;
 import org.apache.flink.api.common.restartstrategy.RestartStrategies;
@@ -31,7 +31,7 @@ import java.util.PriorityQueue;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
-public class FlinkEventTimeProcessor {
+public class EventTimeProcessor {
 
     public static void main(String[] args) throws Exception {
 
