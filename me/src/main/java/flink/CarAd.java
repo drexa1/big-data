@@ -1,4 +1,4 @@
-package main.java;
+package flink;
 
 import java.io.Serializable;
 
