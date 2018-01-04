@@ -1,17 +1,20 @@
 package io.dcos;
 
-import org.apache.flink.api.common.functions.*;
+import org.apache.flink.api.common.functions.FilterFunction;
+import org.apache.flink.api.common.functions.FoldFunction;
+import org.apache.flink.api.common.functions.MapFunction;
+import org.apache.flink.api.java.utils.ParameterTool;
 import org.apache.flink.streaming.api.TimeCharacteristic;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.timestamps.AscendingTimestampExtractor;
 import org.apache.flink.streaming.api.windowing.assigners.SlidingEventTimeWindows;
 import org.apache.flink.streaming.api.windowing.time.Time;
-import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer09;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer09;
 import org.apache.flink.streaming.util.serialization.SimpleStringSchema;
-import org.apache.flink.api.java.utils.ParameterTool;
+
 import java.util.Properties;
 
 import static java.lang.Math.max;
@@ -41,7 +44,7 @@ public class FinancialTransactionJob {
         DataStream<Transaction> transactionsStream = env
                 .addSource (new FlinkKafkaConsumer09<> (inputTopic, new SimpleStringSchema (), properties))
                 // Map from String from Kafka Stream to Transaction.
-                .map (new MapFunction<String, Transaction> () {
+                .map (new MapFunction<String, Transaction>() {
                     @Override
                     public Transaction map(String value) throws Exception {
                         return new Transaction (value);
@@ -65,7 +68,7 @@ public class FinancialTransactionJob {
                 // Sum over ten minute
                 .window (SlidingEventTimeWindows.of (Time.minutes (10), Time.minutes (2)  ))
                 // Fold into Aggregate.
-                .fold (new TransactionAggregate (), new FoldFunction<Transaction,TransactionAggregate> () {
+                .fold (new TransactionAggregate (), new FoldFunction<Transaction,TransactionAggregate>() {
                     @Override
                      public TransactionAggregate fold( TransactionAggregate transactionAggregate, Transaction transaction) {
                          transactionAggregate.transactionVector.add (transaction);
@@ -78,7 +81,7 @@ public class FinancialTransactionJob {
         });
 
         DataStream<String> kafka_output = rate_count
-                .filter (new FilterFunction<TransactionAggregate> () {
+                .filter (new FilterFunction<TransactionAggregate>() {
                              @Override
                              public boolean filter(TransactionAggregate transaction) throws Exception {
                                  // Output if summed amount greater than 10000
