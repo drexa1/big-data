@@ -25,10 +25,10 @@ public class OsconJob {
       StreamExecutionEnvironment.getExecutionEnvironment();
 
     // Uncomment this line to enable fault-tolerance for state
-    //env.enableCheckpointing(1000);
+    env.enableCheckpointing(1000);
 
     // Uncomment this line to enable Event Time
-    //env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
+    env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
 
     // Simulate some sensor data
     DataStream<KeyedDataPoint<Double>> sensorStream = generateSensorData(env);
