@@ -49,7 +49,6 @@ public final class DataLoader {
 
     private DataLoader() {}
 
-
     public static Map<String, List<String>> getFlightDataByAirport(String path) throws IOException {
          return loadFilteredByAirportRegex(AIRPORT_INDEX, new File(path));
     }
@@ -62,11 +61,9 @@ public final class DataLoader {
     }
 
     public static void main(String[] args) throws Exception {
-
         LOG.info("Getting Flights");
         Map<String, List<String>> trainingData = getFlightDataByAirport("src/main/resources/allFlights.txt");
         printMap(trainingData);
-
     }
 
     private static void printMap(Map<String, List<String>> map) {

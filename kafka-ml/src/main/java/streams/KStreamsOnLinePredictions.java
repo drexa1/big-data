@@ -120,7 +120,6 @@ public class KStreamsOnLinePredictions {
         return Serdes.serdeFrom(listJsonSerializer, listDeserializer);
     }
 
-
     private static Properties getProperties() {
         Properties props = new Properties();
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, "streams-online-inferencing");

@@ -42,7 +42,6 @@ public final class DataProducer {
     private DataProducer() {}
 
     public static void main(String[] args) throws IOException, InterruptedException {
-
         if (args.length > 0) {
             LOG.info("Running in populate GlobalKTable Mode");
             populateGlobalKTable();
@@ -55,7 +54,6 @@ public final class DataProducer {
             }
         }
     }
-
 
     public static void sendRawData(String fileName) throws InterruptedException, IOException {
         LOG.info("Sending some raw data and \"new\" update data to run demo");

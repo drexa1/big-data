@@ -35,7 +35,6 @@ public class AirlinePredictorProcessor extends AbstractProcessor<String, String>
     private MeteredKeyValueStore<String, List<String>> flights;
     private static final Logger LOG = LoggerFactory.getLogger(AirlinePredictorProcessor.class);
 
-
     @Override
     @SuppressWarnings("unchecked")
     public void init(ProcessorContext context) {
