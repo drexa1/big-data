@@ -22,7 +22,6 @@ import org.apache.flink.streaming.api.functions.ProcessFunction;
 import org.apache.flink.streaming.api.functions.source.ParallelSourceFunction;
 import org.apache.flink.streaming.api.watermark.Watermark;
 import org.apache.flink.util.Collector;
-
 import java.io.File;
 import java.io.Serializable;
 import java.util.Collections;
@@ -94,70 +93,70 @@ public class EventTimeProcessor {
             }
         }
     }
+}
 
-    public static class TimestampExtractor implements AssignerWithPunctuatedWatermarks<Event> {
-        private final long maxOutOfOrderness = 30_000L; // ET randomization goes from 00_000 to 29_999
-        @Override
-        public long extractTimestamp(Event event, long previousElementTimestamp) {
-            return event.time;
-        }
-        @Override
-        public Watermark checkAndGetNextWatermark(Event event, long extractedTimestamp) {
-            // simply emit a watermark with every event
-            return new Watermark(extractedTimestamp - maxOutOfOrderness);
-        }
+class TimestampExtractor implements AssignerWithPunctuatedWatermarks<Event> {
+    private final long maxOutOfOrderness = 30_000L; // ET randomization goes from 00_000 to 29_999
+    @Override
+    public long extractTimestamp(Event event, long previousElementTimestamp) {
+        return event.time;
     }
-
-    public static class Event implements Serializable, Comparable<Event> {
-        public String someData;
-        public long time;
-        @Override
-        public String toString() {
-            return "Event(" + time + ", " + someData + ')';
-        }
-        @Override
-        public int compareTo(Event other) {
-            return Long.compare(this.time, other.time);
-        }
+    @Override
+    public Watermark checkAndGetNextWatermark(Event event, long extractedTimestamp) {
+        // simply emit a watermark with every event
+        return new Watermark(extractedTimestamp - maxOutOfOrderness);
     }
+}
 
-    public static class EventGenerator implements ParallelSourceFunction<Event>, ListCheckpointed<Long> {
-        private static final long serialVersionUID = 9159457797902106334L;
-        private boolean running = true;
-        public static final long OutOfOrderness = 15000L;
-        public long counter = OutOfOrderness;
+class Event implements Serializable, Comparable<Event> {
+    public String someData;
+    public long time;
+    @Override
+    public String toString() {
+        return "Event(" + time + ", " + someData + ')';
+    }
+    @Override
+    public int compareTo(Event other) {
+        return Long.compare(this.time, other.time);
+    }
+}
 
-        public void run(SourceContext<Event> sourceContext) throws Exception {
-            StringBuffer buf = new StringBuffer();
-            while (running) {
-                Event evt = new Event();
-                long random = ThreadLocalRandom.current().nextLong(-OutOfOrderness, OutOfOrderness);
-                evt.time = counter + random;
-                buf.append("original index:").append(counter).append(" time: ").append(evt.time);
-                evt.someData = buf.toString();
-                buf.setLength(0);
-                synchronized (sourceContext.getCheckpointLock()) {
-                    sourceContext.collect(evt);
-                    counter++;
-                }
-                if(counter % 1_000L == 0) {
-                    Thread.sleep(10);
-                }
+class EventGenerator implements ParallelSourceFunction<Event>, ListCheckpointed<Long> {
+    private static final long serialVersionUID = 9159457797902106334L;
+    private boolean running = true;
+    public static final long OutOfOrderness = 15000L;
+    public long counter = OutOfOrderness;
+
+    public void run(SourceContext<Event> sourceContext) throws Exception {
+        StringBuffer buf = new StringBuffer();
+        while (running) {
+            Event evt = new Event();
+            long random = ThreadLocalRandom.current().nextLong(-OutOfOrderness, OutOfOrderness);
+            evt.time = counter + random;
+            buf.append("original index:").append(counter).append(" time: ").append(evt.time);
+            evt.someData = buf.toString();
+            buf.setLength(0);
+            synchronized (sourceContext.getCheckpointLock()) {
+                sourceContext.collect(evt);
+                counter++;
+            }
+            if(counter % 1_000L == 0) {
+                Thread.sleep(10);
             }
         }
+    }
 
-        public void cancel() {
-            running = false;
-        }
+    public void cancel() {
+        running = false;
+    }
 
-        @Override
-        public List<Long> snapshotState(long checkpointId, long timestamp) throws Exception {
-            return Collections.singletonList(counter);
-        }
+    @Override
+    public List<Long> snapshotState(long checkpointId, long timestamp) throws Exception {
+        return Collections.singletonList(counter);
+    }
 
-        @Override
-        public void restoreState(List<Long> state) throws Exception {
-            counter = state.get(0);
-        }
+    @Override
+    public void restoreState(List<Long> state) throws Exception {
+        counter = state.get(0);
     }
 }
