@@ -28,18 +28,18 @@ repositories {
 
 task populateGlobalKTable(type: JavaExec) {
     classpath sourceSets.main.runtimeClasspath
-    main = "org.apache.kafka.inference.blog.streams.DataProducer"
+    main = "streams.DataProducer"
     args(["load"])
 }
 
 task runDataFeed(type: JavaExec) {
     classpath sourceSets.main.runtimeClasspath
-    main = "org.apache.kafka.inference.blog.streams.DataProducer"
+    main = "streams.DataProducer"
 }
 
 task runOnlinePredictions(type: JavaExec) {
     classpath sourceSets.main.runtimeClasspath
-    main = "org.apache.kafka.inference.blog.streams.KStreamsOnLinePredictions"
+    main = "streams.KStreamsOnLinePredictions"
 }
 
 dependencies {
