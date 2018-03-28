@@ -89,7 +89,7 @@ In order to load the graphs board in Grafana the first thing is select the Influ
 
 A new datasource can be easily created and saved using the values defined in the main configuration file.
 
-![Setting up the InfluxDB datasource](/doc/setup_grafana_datasource.PNG)
+![Setting up the InfluxDB datasource](doc/setup_grafana_datasource.PNG)
 
 If you have an already running instance, the existing databases can be queried by running the command 
 "*SHOW DATABASES*" in the InfluxDB CLI.
@@ -103,13 +103,13 @@ In this dashboard there are graphs for all the existing sensors and the dates of
 more specifically, showing the values of the 25-percentile (Q1) and the 75-percentile (Q3) of each sensor history.
 A lot can be accomplished with Grafana, but this is a good start.
 
-![Grafana board](/doc/grafana_board.PNG)
+![Grafana board](doc/grafana_board.PNG)
 
 This generated dashboard can be uploaded to Grafana just importing the provided file "*grafana-dashboard.json*" 
 at the dashboards, import menu. Is this dialog you can select the file to upload, or copy-paste the JSON contents
 for fine tunning
 
-![Importing Grafana board](/doc/grafana_import.PNG)
+![Importing Grafana board](doc/grafana_import.PNG)
 
 ## Setting Elasticsearch
 
@@ -140,12 +140,12 @@ PUT index-all
     }
 }
 ```
-![Creating Elastic index](/doc/setup_kibana_index.PNG)
+![Creating Elastic index](doc/setup_kibana_index.PNG)
 
 Running the job with Elasticsearch sinking configured should show the cluster ingesting data against the specified 
 index
 
-![Writing Elastic data](/doc/elastic_index_sinking.PNG)
+![Writing Elastic data](doc/elastic_index_sinking.PNG)
 
 (...it might a while, tho)
 
